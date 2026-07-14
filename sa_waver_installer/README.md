@@ -5,5 +5,5 @@
 ## Build
 
 ```powershell
-cargo build --release -p sa_waver_installer
+cargo build --release -p sa_waver_installer --features windows-installer
 ```

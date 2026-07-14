@@ -18,6 +18,10 @@ It reshapes the input waveform through an editable transfer curve, making it use
 - 8 host automation slots that can be bound to curve node coordinates
 - Supports `VST3` and `CLAP`, plus a standalone build
 
+macOS builds currently provide VST3 and CLAP plugins. The Windows installer is
+not built on macOS; install the bundles to `~/Library/Audio/Plug-Ins/VST3` and
+`~/Library/Audio/Plug-Ins/CLAP`, or copy them manually.
+
 ## Basic Usage
 
 1. Insert `SA Waver` on a track, bus, or sound source.
@@ -66,3 +70,7 @@ It reshapes the input waveform through an editable transfer curve, making it use
 ```shell
 cargo xtask bundle sa_waver --release
 ```
+
+On macOS, run the command above on an Apple Silicon or Intel Mac. The resulting
+VST3 and CLAP bundles can be tested locally, but releases are not currently
+code-signed or notarized.

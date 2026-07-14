@@ -184,14 +184,21 @@ impl<'a, P: Param> ParamKnob<'a, P> {
             self.begin_drag();
             Self::set_drag_amount_memory(ui, 0.0);
 
-            let start_pos = Self::get_cursor_screen_pos();
-            ui.memory_mut(|mem| {
-                mem.data.insert_temp(*DRAG_START_SCREEN_POS_ID, start_pos);
-            });
+            #[cfg(target_os = "windows")]
+            {
+                let start_pos = Self::get_cursor_screen_pos();
+                ui.memory_mut(|mem| {
+                    mem.data.insert_temp(*DRAG_START_SCREEN_POS_ID, start_pos);
+                });
 
-            ui.output_mut(|o| o.cursor_icon = egui::CursorIcon::None);
+                ui.output_mut(|o| o.cursor_icon = egui::CursorIcon::None);
+            }
+
+            #[cfg(not(target_os = "windows"))]
+            Self::set_drag_normalized_start_value_memory(ui, self.normalized_value());
         }
 
+        #[cfg(target_os = "windows")]
         if response.dragged() {
             ui.output_mut(|o| o.cursor_icon = egui::CursorIcon::None);
 
@@ -216,6 +223,17 @@ impl<'a, P: Param> ParamKnob<'a, P> {
                     Self::set_cursor_screen_pos(lock_pos);
                 }
             }
+        }
+
+        #[cfg(not(target_os = "windows"))]
+        if response.dragged() {
+            let mut delta = -response.drag_delta().y * STANDARD_DRAG_MULTIPLIER;
+            if ui.input(|i| i.modifiers.shift) {
+                delta *= 0.1;
+            }
+            let start_value = Self::get_drag_normalized_start_value_memory(ui);
+            self.set_normalized_value((start_value + delta).clamp(0.0, 1.0));
+            response.mark_changed();
         }
 
         if let Some(_) = response.interact_pointer_pos() {
