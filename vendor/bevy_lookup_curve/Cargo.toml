@@ -1,0 +1,104 @@
+[package]
+name = "bevy_lookup_curve"
+keywords = ["bevy"]
+license = "MIT OR Apache-2.0"
+description = "Editable lookup curve for Bevy"
+homepage = "https://crates.io/crates/bevy_lookup_curve"
+documentation = "https://docs.rs/bevy_lookup_curve"
+repository = "https://github.com/villor/bevy_lookup_curve"
+readme = "README.md"
+version = "0.11.0"
+edition = "2024"
+
+[features]
+default = ['editor_bevy']
+serialize = ['dep:serde', 'bevy_math/serialize']
+ron = ['serialize', 'dep:ron', 'dep:thiserror']
+bevy_reflect = [
+    'dep:bevy_reflect',
+    'bevy_math/bevy_reflect',
+    'bevy_app?/bevy_reflect',
+    'bevy_ecs?/bevy_reflect',
+]
+bevy_app = ['dep:bevy_app', 'dep:bevy_log']
+bevy_asset = ['ron', 'bevy_app', 'bevy_reflect', 'dep:bevy_asset']
+bevy_egui = ['dep:bevy_egui', 'dep:bevy_winit', 'bevy_winit/x11']
+editor_egui = ['dep:egui']
+editor_bevy = ['bevy_app', 'bevy_ecs', 'bevy_asset', 'bevy_egui', 'editor_egui']
+inspector-egui = [
+    'bevy_reflect',
+    'bevy_app',
+    'bevy_ecs',
+    'bevy_asset',
+    'bevy_egui',
+    'editor_egui',
+    'dep:bevy-inspector-egui',
+    'dep:egui_plot',
+]
+
+[dependencies]
+bevy_math = { version = "0.18", default-features = false, features = [
+    "std",
+    "curve",
+] }
+bevy_reflect = { version = "0.18", default-features = false, optional = true }
+bevy_app = { version = "0.18", default-features = false, optional = true }
+bevy_ecs = { version = "0.18", default-features = false, optional = true }
+bevy_asset = { version = "0.18", optional = true }
+bevy_log = { version = "0.18", default-features = false, optional = true }
+bevy_winit = { version = "0.18", default-features = false, optional = true }
+
+thiserror = { version = "2", optional = true }
+serde = { version = "1", optional = true }
+ron = { version = "0.12", optional = true }
+
+egui = { version = "0.31.1", optional = true }
+bevy_egui = { version = "0.39", default-features = false, features = [
+    "render",
+], optional = true }
+
+bevy-inspector-egui = { version = "0.36", optional = true, default-features = false, features = [
+    "bevy_render",
+] }
+egui_plot = { version = "0.34", optional = true }
+
+[dev-dependencies]
+bevy = "0.18"
+bevy-inspector-egui = "0.36"
+criterion = "0.5.1"
+rand = "0.9"
+eframe = "0.33"
+
+[[example]]
+name = "dev"
+path = "examples/dev.rs"
+required-features = ["editor_bevy", "bevy_reflect"]
+
+[[example]]
+name = "console"
+path = "examples/console.rs"
+
+[[example]]
+name = "animation"
+path = "examples/animation.rs"
+required-features = ["editor_bevy"]
+
+[[example]]
+name = "egui_only"
+path = "examples/egui_only.rs"
+required-features = ["editor_egui", "ron"]
+
+[[example]]
+name = "inspector_egui"
+path = "examples/inspector_egui.rs"
+required-features = ["inspector-egui"]
+
+# [[bench]]
+# name = "lookup_curve"
+# path = "benches/lookup_curve.rs"
+# harness = false
+
+[[bench]]
+name = "knot_search"
+path = "benches/knot_search.rs"
+harness = false

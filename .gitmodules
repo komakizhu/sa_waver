@@ -1,3 +1,0 @@
-[submodule "vendor/bevy_lookup_curve"]
-	path = vendor/bevy_lookup_curve
-	url = https://github.com/villor/bevy_lookup_curve.git
